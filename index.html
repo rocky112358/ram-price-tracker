@@ -1,0 +1,77 @@
+<html>
+
+<head>
+    <script src="https://cdn.jsdelivr.net/npm/apexcharts"></script>
+    <title>
+        RAM Price Tracker
+    </title>
+</head>
+
+<body>
+    <p><h3>최근 4시간</h3></p>
+    <div id="chart"></div>
+    <script>
+        var options = {
+            chart: {
+                type: "area",
+                stcked: false,
+                height: 400,
+                width: 800,
+                zoom: {
+                    type: 'x',
+                    enabled: true
+                }
+            },
+            fill: {
+                type: 'gradient',
+                gradient: {
+                    shadeIntensity: 1,
+                    inverseColors: false,
+                    opacityFrom: 0.5,
+                    opacityTo: 0,
+                    stops: [0, 90, 100]
+                },
+            },
+            legend: {
+                show: true,
+                showForSingleSeries: true,
+                horizontalAlign: 'left',
+                floating: false,
+            },
+            markers: { size: 0 },
+            tooltip: { x: { format: "MM/dd HH:mm" } },
+            series: [],
+            xaxis: {
+                type: "datetime",
+                labels: {
+                    format: "MM/dd HH:00"
+                }
+            },
+            yaxis: {
+                title: {
+                    text: "카드 최저가 (원)",
+                    rorate: 90
+                }
+            }
+
+        }
+        var chart = new
+            ApexCharts(document.querySelector("#chart"), options)
+        fetch("https://asia-northeast1-ram-price-tracker.cloudfunctions.net/update_series", {
+            method: 'POST',
+            mode: 'cors',
+            headers: {
+                'Content-Type': 'application/json'
+            }
+        }).then(response => response.json()).then(data => {
+            console.log(data)
+            chart.updateSeries(data.series)
+        })
+        chart.render();
+        // TODO 세로 보조선 넣기
+        // TODO 5분텀 1분텀 조정 가능하게 하기 (기본값은 4시간 5분텀, 포인트 48개)
+        // TODO 캔들차트 구현
+    </script>
+</body>
+
+</html>
