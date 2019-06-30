@@ -2,15 +2,24 @@
 
 <head>
     <script src="https://cdn.jsdelivr.net/npm/apexcharts"></script>
+    <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/css/bootstrap.min.css"
+        integrity="sha384-ggOyR0iXCbMQv3Xipma34MD+dH/1fQ784/j6cY/iJTQUOhcWr7x9JvoRxT2MZw1T" crossorigin="anonymous">
+    <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/js/bootstrap.min.js"
+        integrity="sha384-JjSmVgyd0p3pXB1rRibZUAYoIIy6OrQ6VrjIEaFf/nJGzIxFDsf4x0xIM+B07jRM"
+        crossorigin="anonymous"></script>
     <title>
         RAM Price Tracker
     </title>
 </head>
 
 <body>
-    <p><h3>최근 4시간</h3></p>
+    <button type="button" class="btn btn-primary" id="four_hrs">4H</button>
+    <button type="button" class="btn btn-outline-primary" id="twlv_hrs">12H</button>
+    <button type="button" class="btn btn-outline-primary" id="one_day">1D</button>
+    <button type="button" class="btn btn-outline-primary" id="svn_days">7D</button>
     <div id="chart"></div>
     <script>
+        var curDate = new Date();
         var options = {
             chart: {
                 type: "area",
@@ -45,7 +54,9 @@
                 type: "datetime",
                 labels: {
                     format: "MM/dd HH:00"
-                }
+                },
+                min: new Date(curDate).setHours(curDate.getHours() - 4),
+                max: curDate
             },
             yaxis: {
                 title: {
@@ -68,9 +79,53 @@
             chart.updateSeries(data.series)
         })
         chart.render();
-        // TODO 세로 보조선 넣기
         // TODO 5분텀 1분텀 조정 가능하게 하기 (기본값은 4시간 5분텀, 포인트 48개)
         // TODO 캔들차트 구현
+        var resetCssClasses = function (activeEl) {
+            var els = document.querySelectorAll("button");
+            Array.prototype.forEach.call(els, function (el) {
+                el.classList.remove('btn-primary');
+                el.classList.add('btn-outline-primary')
+            });
+            activeEl.target.classList.remove('btn-outline-primary')
+            activeEl.target.classList.add('btn-primary')
+        }
+        document.querySelector("#four_hrs").addEventListener('click', function (e) {
+            resetCssClasses(e)
+            chart.updateOptions({
+                xaxis: {
+                    min: new Date(curDate).setHours(curDate.getHours() - 4),
+                    max: curDate
+                }
+            })
+        })
+        document.querySelector("#twlv_hrs").addEventListener('click', function (e) {
+            resetCssClasses(e)
+            chart.updateOptions({
+                xaxis: {
+                    min: new Date(curDate).setHours(curDate.getHours() - 12),
+                    max: curDate
+                }
+            })
+        })
+        document.querySelector("#one_day").addEventListener('click', function (e) {
+            resetCssClasses(e)
+            chart.updateOptions({
+                xaxis: {
+                    min: new Date(curDate).setDate(curDate.getDate() - 1),
+                    max: curDate
+                }
+            })
+        })
+        document.querySelector("#svn_days").addEventListener('click', function (e) {
+            resetCssClasses(e)
+            chart.updateOptions({
+                xaxis: {
+                    min: new Date(curDate).setDate(curDate.getDate() - 7),
+                    max: curDate
+                }
+            })
+        })
     </script>
 </body>
 
