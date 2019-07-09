@@ -36,8 +36,8 @@
         본 사이트를 이용/신뢰함으로써 발생하는 모든 문제에 대해 개발자는 책임지지 않습니다.<br><br>
         Developed by <a href="https://github.com/rocky112358"><u>rocky112358 (Dongmin Kim)</u></a></div>
     <script>
-        var curDate = new Date();
-        var options = {
+        let curDate = new Date();
+        let options = {
             chart: {
                 type: "area",
                 stcked: false,
@@ -89,7 +89,7 @@
             }
 
         }
-        var chart = new
+        let chart = new
             ApexCharts(document.querySelector("#chart"), options)
         fetch("https://asia-northeast1-ram-price-tracker.cloudfunctions.net/update_series", {
             method: 'POST',
@@ -103,8 +103,8 @@
         })
         chart.render();
         // TODO 캔들차트 구현
-        var resetCssClasses = function (activeEl) {
-            var els = document.querySelectorAll("button");
+        let resetCssClasses = function (activeEl) {
+            let els = document.querySelectorAll("button");
             Array.prototype.forEach.call(els, function (el) {
                 el.classList.remove('btn-primary');
                 el.classList.add('btn-outline-primary')
