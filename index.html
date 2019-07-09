@@ -48,7 +48,7 @@
                     enabled: true
                 }
             },
-            grid:{
+            grid: {
                 show: true,
                 position: 'back',
                 xaxis: {
@@ -87,8 +87,9 @@
                     rorate: 90
                 }
             }
-
         }
+        let default_series = []
+        let seven_days_series = []
         let chart = new
             ApexCharts(document.querySelector("#chart"), options)
         fetch("https://asia-northeast1-ram-price-tracker.cloudfunctions.net/update_series", {
@@ -96,9 +97,12 @@
             mode: 'cors',
             headers: {
                 'Content-Type': 'application/json'
-            }
+            },
+            body: JSON.stringify({
+                mode: "default"
+            })
         }).then(response => response.json()).then(data => {
-            console.log(data)
+            default_series = data.series;
             chart.updateSeries(data.series)
         })
         chart.render();
@@ -114,6 +118,7 @@
         }
         document.querySelector("#four_hrs").addEventListener('click', function (e) {
             resetCssClasses(e)
+            chart.updateSeries(default_series)
             chart.updateOptions({
                 xaxis: {
                     min: new Date(curDate).setHours(curDate.getHours() - 4),
@@ -123,6 +128,7 @@
         })
         document.querySelector("#twlv_hrs").addEventListener('click', function (e) {
             resetCssClasses(e)
+            chart.updateSeries(default_series)
             chart.updateOptions({
                 xaxis: {
                     min: new Date(curDate).setHours(curDate.getHours() - 12),
@@ -132,6 +138,7 @@
         })
         document.querySelector("#one_day").addEventListener('click', function (e) {
             resetCssClasses(e)
+            chart.updateSeries(default_series)
             chart.updateOptions({
                 xaxis: {
                     min: new Date(curDate).setDate(curDate.getDate() - 1),
@@ -141,6 +148,26 @@
         })
         document.querySelector("#svn_days").addEventListener('click', function (e) {
             resetCssClasses(e)
+            console.log("hi", seven_days_series)
+            if (seven_days_series.length === 0) {
+                console.log("get new")
+                fetch("https://asia-northeast1-ram-price-tracker.cloudfunctions.net/update_series", {
+                    method: 'POST',
+                    mode: 'cors',
+                    headers: {
+                        'Content-Type': 'application/json'
+                    },
+                    body: JSON.stringify({
+                        mode: "seven_days"
+                    })
+                }).then(response => response.json()).then(data => {
+                    seven_days_series = data.series;
+                    chart.updateSeries(data.series)
+                })
+            } else {
+                chart.updateSeries(seven_days_series)
+                console.log(seven_days_series)
+            }
             chart.updateOptions({
                 xaxis: {
                     min: new Date(curDate).setDate(curDate.getDate() - 7),
