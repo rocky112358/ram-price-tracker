@@ -1,2 +1,5 @@
 *.exe
 *.go
+
+# dependencies
+/node_modules
