@@ -82,7 +82,10 @@
             xaxis: {
                 type: "datetime",
                 min: new Date(curDate).setHours(curDate.getHours() - 4),
-                max: curDate
+                max: curDate,
+                labels: {
+                    datetimeUTC: false
+                }
             },
             yaxis: {
                 title: {
